@@ -52,11 +52,11 @@ export default function DashboardPage() {
             Dashboard
           </Link>
           <Link
-            href="#"
+            href="/brokers"
             className="flex items-center rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           >
             <BarChart3 className="mr-3 h-5 w-5 text-gray-500" />
-            Analytics
+            Brokers
           </Link>
           <Link
             href="#"
@@ -70,16 +70,16 @@ export default function DashboardPage() {
             className="flex items-center rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           >
             <Calendar className="mr-3 h-5 w-5 text-gray-500" />
-            Calendar
+            Backtest
           </Link>
           <Link
             href="#"
             className="flex items-center rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           >
             <MessageSquare className="mr-3 h-5 w-5 text-gray-500" />
-            Messages
+            Report
           </Link>
-          <Link
+          {/* <Link
             href="#"
             className="flex items-center rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           >
@@ -92,7 +92,7 @@ export default function DashboardPage() {
           >
             <Settings className="mr-3 h-5 w-5 text-gray-500" />
             Settings
-          </Link>
+          </Link> */}
         </nav>
         <div className="border-t border-gray-200 p-4">
           <Link
