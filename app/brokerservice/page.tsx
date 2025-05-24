@@ -223,87 +223,97 @@ const page = () => {
           </SheetContent>
         </Sheet>
         {/* find broker section */}
-        <div className="flex-1 px-6 py-6">
-          <div className="flex items-center gap-4 mb-4">
-            <ArrowLeft size={20} />
-            <h1 className="text-lg font-bold">Find your broker</h1>
+        <div className="flex-1 max-lg:flex-wrap px-6 py-6 items-center lg:mt-16 h-full">
+  <div className="flex items-center gap-4 mb-4">
+    <Link href="/brokers">
+      <ArrowLeft size={20} />
+    </Link>
+    <h1 className="text-lg font-bold">Find your broker</h1>
+  </div>
+
+  {/* Search Input */}
+  <div className="flex justify-left">
+    <div className="flex items-center w-full lg:w-[80%] max-w-3xl px-4 py-4 border border-gray-300 rounded-lg shadow-sm mt-4">
+      <Search className="h-5 w-5 text-gray-500 mr-2" />
+      <input
+        type="text"
+        placeholder="Search Brokers"
+        className="w-full outline-none bg-transparent placeholder-gray-500 text-sm"
+      />
+    </div>
+  </div>
+
+  <div className="flex flex-col">
+    <h2 className="text-base text-gray-400 font-semibold mt-8 mb-2">Popular Brokers</h2>
+
+    {/* Upper Row - 3/3 Pattern */}
+    <div className="grid grid-cols-2 max-sm:grid-cols-3 sm:grid-cols-3 lg:flex lg:flex-row lg:gap-12 gap-6 mb-6">
+      {brokers.slice(0, 6).map((broker, index) => (
+        <div
+          key={`upper-${index}`}
+          className="p-2 flex flex-col gap-3 items-center">
+          <div className="border-[3.5px] border-gray-400 h-[60px] w-[60px] p-1 rounded-full">
+            <img
+              src={broker.image}
+              alt={broker.name}
+              height={100}
+              width={100}
+              className="rounded-full object-contain"
+            />
           </div>
-
-          <div className="flex justify-left">
-            <div className="flex items-center w-[70%] max-w-3xl px-4 py-4 border border-gray-300 rounded-lg shadow-sm">
-              <Search className="h-5 w-5 text-gray-500 mr-2" />
-              <input
-                type="text"
-                placeholder="Search Brokers"
-                className="w-full outline-none bg-transparent placeholder-gray-500 text-sm"
-              />
-            </div>
-          </div>
-
-          <div className="p-4">
-            <h2 className="text-xl font-bold mb-6">Popular Brokers</h2>
-
-            {/* Upper Row - 6 brokers */}
-            <div className="flex flex-row items-left justify-left gap-12  mb-6">
-              {brokers.slice(0, 6).map((broker, index) => (
-                <div
-                  key={`upper-${index}`}
-                  className="p-2 flex flex-col gap-3 items-left">
-                  <div className="border-[3.5px] border-gray-400 h-[60px] w-[60px] p-1 rounded-full">
-                    <img
-                      src={broker.image}
-                      alt={broker.name}
-                      height={100}
-                      width={100}
-                      className="rounded-full"
-                    />
-                  </div>
-                  <span className="text-sm text-center mx-auto font-semibold">
-                    {broker.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Lower Row - 5 brokers */}
-            <div className="flex flex-row items-left justify-left gap-12">
-              {brokers.slice(6).map((broker, index) => (
-                <div
-                  key={`lower-${index}`}
-                  className="p-2 flex flex-col gap-3 items-left">
-                  <div className="border-[3.5px] border-gray-400 h-[60px] w-[60px] p-1 rounded-full flex items-center">
-                    <img
-                      src={broker.image}
-                      alt={broker.name}
-                      height={100}
-                      width={100}
-                      className="rounded-full"
-                    />
-                  </div>
-                  <span className="text-sm text-center mx-auto font-semibold">
-                    {broker.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <span className="text-sm text-center font-semibold">
+            {broker.name}
+          </span>
         </div>
+      ))}
+    </div>
+
+    {/* Lower Row - 3/2 Pattern */}
+    <div className="grid grid-cols-2 max-sm:grid-cols-3 sm:grid-cols-3 md:grid-cols-2 lg:flex lg:flex-row lg:gap-12 gap-6 mb-6">
+      {brokers.slice(6).map((broker, index) => (
+        <div
+          key={`lower-${index}`}
+          className="p-2 flex flex-col gap-3 items-center">
+          <div className="border-[3.5px] border-gray-400 h-[60px] w-[60px] p-1 rounded-full flex items-center">
+            <img
+              src={broker.image}
+              alt={broker.name}
+              height={100}
+              width={100}
+              className="rounded-full object-contain"
+            />
+          </div>
+          <span className="text-sm text-center font-semibold">
+            {broker.name}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
        
        {/* select broker section */}
 
-       <div className=" mx-auto p-6 bg-white rounded-lg shadow-md"> {/* Changed from max-w-md to max-w-2xl */}
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Please select a broker</h2>
-      
-      <div className="p-4 border border-gray-300 rounded bg-gray-50">
-        <p className="text-gray-500 italic">No broker selected at the moment</p>
-      </div>
-      
-      <div className="mt-4">
-        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-          Select Broker
-        </button>
-      </div>
-    </div>
+       <div className="hidden lg:block w-[40%] mx-auto p-6 bg-white rounded-lg shadow-md mt-14">
+  <h2 className="text-lg font-bold text-gray-800 mb-4">
+    Please select a broker
+  </h2>
+
+  <div className=" flex flex-col items-center mt-6">
+    <img
+      src="/image/broker.svg" // ✅ replace with actual path
+      alt="No Broker"
+      className=" mb-2 object-contain"
+      width={300}
+    />
+    <p className="text-gray-500 text-sm text-center">No broker selected at the moment</p>
+  </div>
+
+  
+</div>
+
+
 
 
       </div>
