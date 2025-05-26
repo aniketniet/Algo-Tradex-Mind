@@ -26,6 +26,29 @@ import {
   CirclePlus,
 } from "lucide-react";
 
+interface ProfitTrailingState {
+  type:
+    | "No Trailing"
+    | "Lock Fix Profit"
+    | "Trail Profit"
+    | "Lock and Trail"
+    | null;
+  lockFixProfit: {
+    target: string;
+    amount: string;
+  };
+  trailProfit: {
+    activation: string;
+    offset: string;
+  };
+  lockAndTrail: {
+    target: string;
+    amount: string;
+    activation: string;
+    offset: string;
+  };
+}
+
 const page = () => {
   const [selectedOption, setSelectedOption] = useState<"time" | "indicator">(
     "time"
@@ -40,17 +63,15 @@ const page = () => {
   // const [lossAmount, setLossAmount] = useState("");
   // const [noTradeTime, setNoTradeTime] = useState("15:15");
 
-  const [profitTrailingType, setProfitTrailingType] = useState<string | null>(
-    "Lock Fix Profit"
-  );
-  const [lockProfitValue, setLockProfitValue] = useState("");
+  const [profitTrailing, setProfitTrailing] = useState<ProfitTrailingState>({
+    type: null,
+    lockFixProfit: { target: "", amount: "" },
+    trailProfit: { activation: "", offset: "" },
+    lockAndTrail: { target: "", amount: "", activation: "", offset: "" },
+  });
 
-  const handleOptionChange = (option: string) => {
-    setProfitTrailingType(option);
-    // Clear the input when switching to options that don't need it
-    if (option !== "Lock Fix Profit" && option !== "Lock and Trail") {
-      setLockProfitValue("");
-    }
+  const handleOptionChange = (option: ProfitTrailingState["type"]) => {
+    setProfitTrailing((prev) => ({ ...prev, type: option }));
   };
 
   const toggleDay = (day: string) => {
@@ -325,97 +346,221 @@ const page = () => {
                   onChange={(e) => setSquareOff(e.target.value)}
                   className="text-base w-25 outline-none"
                 />
-                {/* <button className="text-gray-400 hover:text-gray-600 text-sm">❌</button> */}
               </div>
             </div>
+
+            {/* Profit */}
 
             <div className="max-w-full p-4">
-              <h2 className="text-xl font-semibold mb-3">Profit Trailing</h2>
+      <h2 className="text-xl font-semibold mb-3">Profit Trailing</h2>
 
-              <div className="flex flex-wrap gap-6 mb-4">
-                {/* No Trailing */}
-                <div className="flex flex-col">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="noTrailing"
-                      name="profitOption"
-                      checked={profitTrailingType === "No Trailing"}
-                      onChange={() => handleOptionChange("No Trailing")}
-                      className="mr-2"
-                    />
-                    <label htmlFor="noTrailing">No Trailing</label>
-                  </div>
-                </div>
+      <div className="flex flex-col gap-6 mb-4">
+        {/* Radio buttons row */}
+        <div className="flex flex-wrap gap-6">
+          {/* No Trailing */}
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="noTrailing"
+              name="profitOption"
+              checked={profitTrailing.type === "No Trailing"}
+              onChange={() => handleOptionChange("No Trailing")}
+              className="mr-2"
+            />
+            <label htmlFor="noTrailing">No Trailing</label>
+          </div>
 
-                {/* Lock Fix Profit */}
-                <div className="flex flex-col">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="lockFixProfit"
-                      name="profitOption"
-                      checked={profitTrailingType === "Lock Fix Profit"}
-                      onChange={() => handleOptionChange("Lock Fix Profit")}
-                      className="mr-2"
-                    />
-                    <label htmlFor="lockFixProfit">Lock Fix Profit</label>
-                  </div>
-                  {(profitTrailingType === "Lock Fix Profit" ||
-                    profitTrailingType === "Lock and Trail") && (
-                    <div className="flex mt-2 max-w-full">
-                      <span className="mb-1 text-sm">If Profit Reaches</span>
-                      <input
-                        type="text"
-                        value={lockProfitValue}
-                        onChange={(e) => setLockProfitValue(e.target.value)}
-                        placeholder="Lock Profit at"
-                        className="px-3 py-2 border rounded w-full"
-                      />
-                      <input
-                        type="text"
-                        value={lockProfitValue}
-                        onChange={(e) => setLockProfitValue(e.target.value)}
-                        placeholder="Lock Profit at"
-                        className="px-3 py-2 border rounded w-full"
-                      />
-                    </div>
-                  )}
-                </div>
+          {/* Lock Fix Profit */}
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="lockFixProfit"
+              name="profitOption"
+              checked={profitTrailing.type === "Lock Fix Profit"}
+              onChange={() => handleOptionChange("Lock Fix Profit")}
+              className="mr-2"
+            />
+            <label htmlFor="lockFixProfit">Lock Fix Profit</label>
+          </div>
 
-                {/* Trail Profit */}
-                <div className="flex flex-col">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="trailProfit"
-                      name="profitOption"
-                      checked={profitTrailingType === "Trail Profit"}
-                      onChange={() => handleOptionChange("Trail Profit")}
-                      className="mr-2"
-                    />
-                    <label htmlFor="trailProfit">Trail Profit</label>
-                  </div>
-                </div>
+          {/* Trail Profit */}
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="trailProfit"
+              name="profitOption"
+              checked={profitTrailing.type === "Trail Profit"}
+              onChange={() => handleOptionChange("Trail Profit")}
+              className="mr-2"
+            />
+            <label htmlFor="trailProfit">Trail Profit</label>
+          </div>
 
-                {/* Lock and Trail */}
-                <div className="flex flex-col">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="lockAndTrail"
-                      name="profitOption"
-                      checked={profitTrailingType === "Lock and Trail"}
-                      onChange={() => handleOptionChange("Lock and Trail")}
-                      className="mr-2"
-                    />
-                    <label htmlFor="lockAndTrail">Lock and Trail</label>
-                  </div>
-                </div>
+          {/* Lock and Trail */}
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="lockAndTrail"
+              name="profitOption"
+              checked={profitTrailing.type === "Lock and Trail"}
+              onChange={() => handleOptionChange("Lock and Trail")}
+              className="mr-2"
+            />
+            <label htmlFor="lockAndTrail">Lock and Trail</label>
+          </div>
+        </div>
+
+        {/* Inputs container */}
+        <div className="w-full  mt-2 space-y-4">
+          {/* Lock Fix Profit Inputs - shows when "Lock Fix Profit" is selected */}
+          {profitTrailing.type === "Lock Fix Profit" && (
+            <div className="flex flex-row w-3/4 gap-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.lockFixProfit.target}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    lockFixProfit: { ...prev.lockFixProfit, target: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2 px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Profit target
+                </span>
               </div>
-
-              <hr className="my-4 border-t border-gray-200" />
+              
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.lockFixProfit.amount}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    lockFixProfit: { ...prev.lockFixProfit, amount: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2 px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Lock amount
+                </span>
+              </div>
             </div>
+          )}
+
+          {/* Trail Profit Inputs - shows when "Trail Profit" is selected */}
+          {profitTrailing.type === "Trail Profit" && (
+            <div className="flex flex-row gap-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.trailProfit.activation}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    trailProfit: { ...prev.trailProfit, activation: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2 pb-2 px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Activation price
+                </span>
+              </div>
+              
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.trailProfit.offset}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    trailProfit: { ...prev.trailProfit, offset: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2 pb-2 px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Trail offset
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Lock and Trail Inputs - shows when "Lock and Trail" is selected */}
+          {profitTrailing.type === "Lock and Trail" && (
+            <div className="flex flex-row gap-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.lockAndTrail.target}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    lockAndTrail: { ...prev.lockAndTrail, target: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2  px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Profit target
+                </span>
+              </div>
+              
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.lockAndTrail.amount}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    lockAndTrail: { ...prev.lockAndTrail, amount: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2 px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Lock amount
+                </span>
+              </div>
+              
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.lockAndTrail.activation}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    lockAndTrail: { ...prev.lockAndTrail, activation: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2 px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Activation price
+                </span>
+              </div>
+              
+              <div className="relative">
+                <input
+                  type="text"
+                  value={profitTrailing.lockAndTrail.offset}
+                  onChange={(e) => setProfitTrailing(prev => ({
+                    ...prev,
+                    lockAndTrail: { ...prev.lockAndTrail, offset: e.target.value }
+                  }))}
+                  className="peer w-full outline-none border text-sm rounded-xl py-2 px-3 border-gray-300 focus:border-blue-500"
+                />
+                <span className="absolute left-3 top-2 text-sm text-gray-400 transition-all duration-300 pointer-events-none px-2 
+                       peer-focus:top-0 peer-focus:mt-[-8px] peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white z-10">
+                  Trail offset
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <hr className="my-4 border-t border-gray-200" />
+    </div>
+
+            {/* profit end */}
           </div>
         </div>
       </div>
